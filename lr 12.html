@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор вычитания - Vue.js SPA</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script> <!--Подключение библиотеки Vue.js через CDN.-->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #E8F0F2;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            margin: 10px;
+            border: 2px solid #007BFF;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #log {
+            margin-top: 20px;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #007BFF;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ffffff;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+        }
+
+        #clearLogs {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Калькулятор вычитания</h1>
+        <input type="number" v-model="num1" placeholder="Число 1" @input="logInput">
+        <input type="number" v-model="num2" placeholder="Число 2" @input="logInput">
+        <button @click="calculate">Вычесть</button> <!--Кнопка для выполнения вычитания.-->
+        <div id="result">{{ result }}</div>
+        <div id="log">
+            <h3>Журнал логов:</h3>
+            <div v-if="logs.length === 0">Логи пусты. Введите данные для начала.</div>
+            <div v-for="(log, index) in logs" :key="index" class="log-entry">{{ log }}</div>
+        </div>
+        <button id="clearLogs" @click="clearLogs">Очистить журнал</button>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                num1: null,
+                num2: null,
+                result: '',
+                logs: []
+            },
+            methods: {
+                calculate() {
+                    const number1 = parseFloat(this.num1);
+                    const number2 = parseFloat(this.num2);
+
+                    if (!isNaN(number1) && !isNaN(number2)) {
+                        const subtractionResult = number1 - number2;
+                        this.result = `Результат: ${subtractionResult}`;
+                        this.logResult(`${number1} - ${number2} = ${subtractionResult}`);
+                    } else {
+                        this.result = 'Введите корректные числовые значения!';
+                    }
+                },
+                logInput() {
+                    this.result = ''; // Сбрасываем результат при новом вводе
+                },
+                logResult(logMessage) {
+                    if (this.logs.length >= 10) {
+                        this.logs.shift(); // Удаляем старейший лог, если их больше 10
+                    }
+                    this.logs.push(logMessage);
+                },
+                clearLogs() {
+                    this.logs = [];
+                }
+            }
+        });
+    </script>
+</body>
+</html>
